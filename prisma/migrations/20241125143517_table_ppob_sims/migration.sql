@@ -1,0 +1,58 @@
+-- CreateTable
+CREATE TABLE `users` (
+    `id` INTEGER NOT NULL AUTO_INCREMENT,
+    `email` VARCHAR(50) NOT NULL,
+    `password` VARCHAR(50) NOT NULL,
+    `first_name` VARCHAR(100) NOT NULL,
+    `last_name` VARCHAR(100) NOT NULL,
+    `profile_picture` TEXT NULL,
+
+    PRIMARY KEY (`id`)
+) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+
+-- CreateTable
+CREATE TABLE `balances` (
+    `id` INTEGER NOT NULL AUTO_INCREMENT,
+    `user_id` INTEGER NOT NULL,
+    `balance` BIGINT NOT NULL,
+
+    PRIMARY KEY (`id`)
+) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+
+-- CreateTable
+CREATE TABLE `banners` (
+    `id` INTEGER NOT NULL AUTO_INCREMENT,
+    `banner_name` VARCHAR(100) NOT NULL,
+    `banner_image` VARCHAR(100) NOT NULL,
+    `description` TEXT NOT NULL,
+
+    PRIMARY KEY (`id`)
+) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+
+-- CreateTable
+CREATE TABLE `services` (
+    `id` INTEGER NOT NULL AUTO_INCREMENT,
+    `service_code` VARCHAR(50) NOT NULL,
+    `service_name` VARCHAR(100) NOT NULL,
+    `service_icon` VARCHAR(100) NOT NULL,
+    `service_tariff` INTEGER NOT NULL,
+
+    PRIMARY KEY (`id`)
+) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+
+-- CreateTable
+CREATE TABLE `transactions` (
+    `id` INTEGER NOT NULL AUTO_INCREMENT,
+    `invoice_number` VARCHAR(50) NOT NULL,
+    `service_code` VARCHAR(50) NOT NULL,
+    `service_name` VARCHAR(100) NOT NULL,
+    `transaction_type` VARCHAR(100) NOT NULL,
+    `total_amount` INTEGER NOT NULL,
+    `created_on` DATETIME NULL,
+
+    UNIQUE INDEX `transactions_invoice_number_key`(`invoice_number`),
+    PRIMARY KEY (`id`)
+) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+
+-- AddForeignKey
+ALTER TABLE `balances` ADD CONSTRAINT `balances_user_id_fkey` FOREIGN KEY (`user_id`) REFERENCES `users`(`id`) ON DELETE RESTRICT ON UPDATE CASCADE;
