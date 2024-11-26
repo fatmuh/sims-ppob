@@ -15,7 +15,7 @@ const createUser = async (user) => {
             id: true,
             email: true,
             first_name: true,
-            last_name: true,
+            last_name: true
         },
     });
 };
@@ -27,9 +27,14 @@ const findUserByEmail = async (email) => {
             id: true,
             email: true,
             password: true,
+            first_name: true,
+            last_name: true,
+            profile_image: true,
         },
     });
 };
+
+
 
 export default {
     countUser,

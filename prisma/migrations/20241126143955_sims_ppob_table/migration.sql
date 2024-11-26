@@ -5,7 +5,7 @@ CREATE TABLE `users` (
     `password` VARCHAR(100) NOT NULL,
     `first_name` VARCHAR(100) NOT NULL,
     `last_name` VARCHAR(100) NOT NULL,
-    `profile_picture` TEXT NULL,
+    `profile_image` TEXT NULL,
 
     PRIMARY KEY (`id`)
 ) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;

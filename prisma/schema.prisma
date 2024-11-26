@@ -14,13 +14,13 @@ datasource db {
 }
 
 model User {
-  id              Int       @id @default(autoincrement())
-  email           String    @db.VarChar(50)
-  password        String    @db.VarChar(100)
-  first_name      String    @db.VarChar(100)
-  last_name       String    @db.VarChar(100)
-  profile_picture String?   @db.Text
-  balances        Balance[]
+  id            Int       @id @default(autoincrement())
+  email         String    @db.VarChar(50)
+  password      String    @db.VarChar(100)
+  first_name    String    @db.VarChar(100)
+  last_name     String    @db.VarChar(100)
+  profile_image String?   @db.Text
+  balances      Balance[]
 
   @@map("users")
 }

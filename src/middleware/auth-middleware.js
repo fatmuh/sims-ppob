@@ -8,7 +8,9 @@ export const authMiddleware = async (req, res, next) => {
     const authHeader = req.get("Authorization");
     if (!authHeader) {
         return res.status(401).json({
-            message: "Unauthorized",
+            status: 108,
+            message: "Token tidak tidak valid atau kadaluwarsa",
+            data: null
         }).end();
     }
 
@@ -25,21 +27,28 @@ export const authMiddleware = async (req, res, next) => {
 
         if (!user) {
             return res.status(401).json({
-                message: "Unauthorized",
+                status: 108,
+                message: "Token tidak tidak valid atau kadaluwarsa",
+                data: null
             }).end();
         } else {
             req.user = user;
+            req.email = user.email;
             next();
         }
     } catch (err) {
 
         if (err instanceof jwt.TokenExpiredError) {
             return res.status(401).json({
-                message: "Sesi anda telah habis!",
+                status: 108,
+                message: "Token tidak tidak valid atau kadaluwarsa",
+                data: null
             }).end();
         } else {
             return res.status(401).json({
-                message: "Unauthorized",
+                status: 108,
+                message: "Token tidak tidak valid atau kadaluwarsa",
+                data: null
             }).end();
         }
     }
