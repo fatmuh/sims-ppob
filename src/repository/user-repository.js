@@ -20,7 +20,19 @@ const createUser = async (user) => {
     });
 };
 
+const findUserByEmail = async (email) => {
+    return prismaClient.user.findFirst({
+        where: { email },
+        select: {
+            id: true,
+            email: true,
+            password: true,
+        },
+    });
+};
+
 export default {
     countUser,
-    createUser
+    createUser,
+    findUserByEmail
 };

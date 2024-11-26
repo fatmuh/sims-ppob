@@ -2,7 +2,8 @@ import {ResponseError} from "../error/response-error.js";
 
 const errorMiddleware = (err, req, res, next) => {
     if (err instanceof ResponseError) {
-        res.status(err.status).json({
+        res.status(err.statusHeader).json({
+            status: err.status,
             message: err.message,
             ...(err.details ? JSON.parse(err.details) : {})
         });
