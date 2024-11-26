@@ -34,10 +34,22 @@ const findUserByEmail = async (email) => {
     });
 };
 
-
+const updateUser = async (email, updateData) => {
+    return prismaClient.user.update({
+        where: { email },
+        data: updateData,
+        select: {
+            email: true,
+            first_name: true,
+            last_name: true,
+            profile_image: true,
+        },
+    });
+};
 
 export default {
     countUser,
     createUser,
-    findUserByEmail
+    findUserByEmail,
+    updateUser
 };

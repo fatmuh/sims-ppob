@@ -7,6 +7,7 @@ const profileRouter = new express.Router();
 profileRouter.use(authMiddleware)
 
 profileRouter.get('/profile', profileController.get);
+profileRouter.put('/profile/update', profileController.update);
 
 export {
     profileRouter

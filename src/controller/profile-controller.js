@@ -14,6 +14,24 @@ const get = async (req, res, next) => {
     }
 }
 
+const update = async (req, res, next) => {
+    try {
+        const email = req.email;
+        const request = req.body;
+
+        const result = await profileService.update(email, request);
+
+        res.status(200).json({
+            status: 0,
+            message: "User Edited",
+            data: result
+        })
+    } catch (e) {
+        next(e);
+    }
+}
+
 export default {
     get,
+    update
 }

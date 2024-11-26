@@ -87,3 +87,100 @@ describe('GET /profile', function () {
         expect(result.body.message).toBe("Token tidak tidak valid atau kadaluwarsa");
     });
 });
+
+describe('PUT /profile/update', function () {
+
+    beforeEach(() => {
+        jest.clearAllMocks();
+    });
+
+    it('should can update profile user', async () => {
+        userRepository.countUser.mockResolvedValue(0);
+        userRepository.createUser.mockResolvedValue({
+            id: 1,
+            email: "test@example.com",
+            first_name: "Test",
+            last_name: "Akun",
+        });
+
+        userRepository.findUserByEmail.mockResolvedValue({
+            id: 1,
+            email: "test@example.com",
+            password: await bcrypt.hash("12345678", 10),
+            first_name: "Test",
+            last_name: "Akun",
+            profile_image: "https://yoururlapi.com/profile.jpeg"
+        });
+
+        jwt.verify.mockImplementation((token, secret, callback) => {
+            callback(null, { email: "test@example.com" });
+        });
+
+        const token = 'valid-token';
+
+        const result = await supertest(web)
+            .put('/profile/update')
+            .set('Authorization', 'Bearer ' + token)
+            .send({
+                first_name: "Test",
+                last_name: "Akun",
+            });
+        
+        expect(result.status).toBe(200);
+        expect(result.body.status).toBe(0);
+        expect(result.body.message).toBe("User Edited");
+    });
+
+    it('should reject update if request is invalid', async () => {
+        userRepository.countUser.mockResolvedValue(0);
+        userRepository.createUser.mockResolvedValue({
+            id: 1,
+            email: "test@example.com",
+            first_name: "Test",
+            last_name: "Akun",
+        });
+
+        userRepository.findUserByEmail.mockResolvedValue({
+            id: 1,
+            email: "test@example.com",
+            password: await bcrypt.hash("12345678", 10),
+            first_name: "Test",
+            last_name: "Akun",
+            profile_image: "https://yoururlapi.com/profile.jpeg"
+        });
+
+        jwt.verify.mockImplementation((token, secret, callback) => {
+            callback(null, { email: "test@example.com" });
+        });
+
+        const token = 'valid-token';
+
+        const result = await supertest(web)
+            .put('/profile/update')
+            .set('Authorization', 'Bearer ' + token)
+            .send({
+                first_name: "",
+                last_name: "",
+            });
+
+        expect(result.status).toBe(400);
+    });
+
+    it('should reject if token is invalid', async () => {
+        jwt.verify.mockImplementation((token, secret, callback) => {
+            callback(new Error('Invalid token'), null);
+        });
+
+        const result = await supertest(web)
+            .put('/profile/update')
+            .set('Authorization', 'Bearer invalid-token')
+            .send({
+                first_name: "Test",
+                last_name: "Akun",
+            });
+
+        expect(result.status).toBe(401);
+        expect(result.body.status).toBe(108);
+        expect(result.body.message).toBe("Token tidak tidak valid atau kadaluwarsa");
+    });
+});
