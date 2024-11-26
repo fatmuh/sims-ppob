@@ -19,7 +19,8 @@ const register = async (req, res, next) => {
             if (e.status === 102) {
                 return res.status(400).json({
                     status: 102,
-                    message: e.message
+                    message: e.message,
+                    data: null
                 });
             }
         }
