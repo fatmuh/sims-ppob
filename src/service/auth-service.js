@@ -14,7 +14,7 @@ const register = async (request) => {
 
     const countUser = await userRepository.countUser(user.email);
 
-    if (countUser > 0) {
+    if (countUser) {
         throw new ResponseError(400,400, "Akun sudah terdaftar!");
     }
 
