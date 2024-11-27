@@ -8,9 +8,19 @@ const createTransaction = async (data) => {
         VALUES (${user_id}, ${service_id}, ${invoice_number}, ${transaction_type}, ${total_amount}, ${created_on})`;
 
     const createdTransaction = await prismaClient.$queryRaw`
-        SELECT user_id, service_id, invoice_number, transaction_type, total_amount, created_on 
-        FROM transactions 
-        WHERE user_id = ${user_id} LIMIT 1`;
+        SELECT 
+            t.invoice_number, 
+            s.service_code, 
+            s.service_name,
+            t.transaction_type, 
+            t.total_amount, 
+            t.created_on
+        FROM transactions t
+        LEFT JOIN services s ON t.service_id = s.id
+        WHERE t.user_id = ${user_id} 
+        ORDER BY t.id DESC 
+        LIMIT 1;
+    `;
 
     return createdTransaction.length > 0 ? createdTransaction[0] : null;
 };
@@ -27,7 +37,6 @@ const countTransactionsByDate = async (formattedDateDb) => {
 
     return Number(result[0].count);
 };
-
 
 export default {
     createTransaction,

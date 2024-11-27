@@ -7,6 +7,7 @@ transactionRouter.use(authMiddleware)
 
 transactionRouter.get('/balance', transactionController.getBalance);
 transactionRouter.post('/topup', transactionController.updateBalance);
+transactionRouter.post('/transaction', transactionController.postTransaction);
 
 export {
     transactionRouter

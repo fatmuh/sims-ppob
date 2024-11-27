@@ -44,8 +44,22 @@ const updateBalance = async (user_id, updateData) => {
     };
 };
 
+const updateBalanceMinus = async (user_id, updateData) => {
+    const { amount } = updateData;
+
+    await prismaClient.$executeRaw`
+        UPDATE balances 
+        SET balance = balance - ${amount} 
+        WHERE user_id = ${user_id}`;
+
+    return {
+        balance: amount
+    };
+};
+
 export default {
     createBalance,
     findBalanceByUserId,
-    updateBalance
+    updateBalance,
+    updateBalanceMinus
 };
