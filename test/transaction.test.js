@@ -157,7 +157,7 @@ describe('GET /topup', function () {
     });
 });
 
-describe('GET /transactions', function () {
+describe('POST /transactions', function () {
     afterEach(() => {
         jest.clearAllMocks();
     });
@@ -201,6 +201,7 @@ describe('GET /transactions', function () {
                 "invoice_number": "JDWIAJDWADWA",
                 "transaction_type": "PAYMENT",
                 "total_amount": 40000,
+                "description": "Test deskripsi",
                 "created_on": "2024-11-27T00:00:00"
             }
         );
@@ -229,7 +230,94 @@ describe('GET /transactions', function () {
         });
 
         const result = await supertest(web)
-            .get('/topup')
+            .post('/transaction')
+            .set('Authorization', 'Bearer invalid-token')
+            .send({
+                service_code: "PULSA",
+            });
+
+        expect(result.status).toBe(401);
+        expect(result.body.status).toBe(108);
+        expect(result.body.message).toBe("Token tidak tidak valid atau kadaluwarsa");
+    });
+});
+
+describe('GET /transactions/history', function () {
+    afterEach(() => {
+        jest.clearAllMocks();
+    });
+
+    it('should can get history transaction', async () => {
+        userRepository.countUser.mockResolvedValue(0);
+        userRepository.createUser.mockResolvedValue({
+            id: 1,
+            email: "test@example.com",
+            first_name: "Test",
+            last_name: "Akun",
+        });
+
+        userRepository.findUserByEmail.mockResolvedValue({
+            id: 1,
+            email: "test@example.com",
+            password: await bcrypt.hash("12345678", 10),
+            first_name: "Test",
+            last_name: "Akun",
+            profile_image: "https://yoururlapi.com/profile.jpeg"
+        });
+
+        balanceRepository.findBalanceByUserId.mockResolvedValue({
+            "balance": 40000,
+        });
+
+        servicesRepository.findServiceByServiceCode.mockResolvedValue(
+            {
+                "id": 1,
+                "service_code": "PULSA",
+                "service_name": "Pulsa",
+                "service_icon": "https://nutech-integrasi.app/dummy.jpg",
+                "service_tariff": 40000
+            }
+        );
+
+        transactionRepository.getTransactionHistory.mockResolvedValue([
+            {
+                invoice_number: "INV17082023-003",
+                transaction_type: "PAYMENT",
+                description: "Pulsa Indosat",
+                total_amount: 40000,
+                created_on: "2023-08-17T12:10:10.000Z"
+            },
+            {
+                invoice_number: "INV17082023-002",
+                transaction_type: "PAYMENT",
+                description: "PLN Pascabayar",
+                total_amount: 10000,
+                created_on: "2023-08-17T11:10:10.000Z"
+            }
+        ]);
+
+        jwt.verify.mockImplementation((token, secret, callback) => {
+            callback(null, {email: "test@example.com"});
+        });
+
+        const token = 'valid-token';
+
+        const result = await supertest(web)
+            .get('/transaction/history')
+            .set('Authorization', 'Bearer ' + token);
+
+        expect(result.status).toBe(200);
+        expect(result.body.status).toBe(0);
+        expect(result.body.message).toBe("Get History Berhasil");
+    });
+
+    it('should reject if token is invalid', async () => {
+        jwt.verify.mockImplementation((token, secret, callback) => {
+            callback(new Error('Invalid token'), null);
+        });
+
+        const result = await supertest(web)
+            .get('/transaction/history')
             .set('Authorization', 'Bearer invalid-token');
 
         expect(result.status).toBe(401);

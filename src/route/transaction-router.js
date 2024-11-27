@@ -8,6 +8,7 @@ transactionRouter.use(authMiddleware)
 transactionRouter.get('/balance', transactionController.getBalance);
 transactionRouter.post('/topup', transactionController.updateBalance);
 transactionRouter.post('/transaction', transactionController.postTransaction);
+transactionRouter.get('/transaction/history', transactionController.getHistory);
 
 export {
     transactionRouter

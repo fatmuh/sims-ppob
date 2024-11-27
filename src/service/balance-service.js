@@ -48,6 +48,7 @@ const update = async (email, request) => {
             invoice_number: invoiceNumber,
             transaction_type: "TOPUP",
             total_amount: user.amount,
+            description: "Top Up balance",
             created_on: dateNow,
         });
     }

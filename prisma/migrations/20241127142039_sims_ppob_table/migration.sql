@@ -49,6 +49,7 @@ CREATE TABLE `transactions` (
     `invoice_number` VARCHAR(50) NOT NULL,
     `transaction_type` VARCHAR(100) NOT NULL,
     `total_amount` INTEGER NOT NULL,
+    `description` TEXT NOT NULL,
     `created_on` DATETIME NULL,
 
     UNIQUE INDEX `transactions_invoice_number_key`(`invoice_number`),

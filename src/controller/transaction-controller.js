@@ -49,9 +49,30 @@ const postTransaction = async (req, res, next) => {
     }
 }
 
+const getHistory = async (req, res, next) => {
+    try {
+        // Ambil parameter limit dan offset dari request
+        const limit = req.query.limit ? parseInt(req.query.limit, 10) : undefined;
+        const offset = req.query.offset ? parseInt(req.query.offset, 10) : 0;
+
+        // Panggil service untuk mendapatkan data
+        const result = await transactionService.get(limit, offset);
+
+        // Kirimkan respons
+        res.status(200).json({
+            status: 0,
+            message: "Get History Berhasil",
+            data: result
+        });
+    } catch (error) {
+        next(error);
+    }
+};
+
 
 export default {
     getBalance,
     updateBalance,
-    postTransaction
+    postTransaction,
+    getHistory
 }

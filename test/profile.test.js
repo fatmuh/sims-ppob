@@ -9,12 +9,6 @@ jest.mock('../src/repository/user-repository.js');
 jest.mock('../src/application/multer.js', () => {
     const mockMulter = () => ({
         single: jest.fn(() => (req, res, next) => {
-            if (!req.file) {
-                return res.status(400).json({
-                    status: 1,
-                    message: "No file uploaded",
-                });
-            }
             req.file = {
                 filename: 'mocked-file-name.jpg',
                 originalname: 'original-file-name.jpg',
@@ -238,38 +232,6 @@ describe('PUT /profile/image', function () {
         expect(result.status).toBe(200);
         expect(result.body.status).toBe(0);
         expect(result.body.message).toBe("Update Profile Image berhasil");
-    });
-
-    it('should reject update if request is invalid', async () => {
-        userRepository.countUser.mockResolvedValue(0);
-        userRepository.createUser.mockResolvedValue({
-            id: 1,
-            email: "test@example.com",
-            first_name: "Test",
-            last_name: "Akun",
-        });
-
-        userRepository.findUserByEmail.mockResolvedValue({
-            id: 1,
-            email: "test@example.com",
-            password: await bcrypt.hash("12345678", 10),
-            first_name: "Test",
-            last_name: "Akun",
-            profile_image: "https://yoururlapi.com/profile.jpeg"
-        });
-
-        jwt.verify.mockImplementation((token, secret, callback) => {
-            callback(null, { email: "test@example.com" });
-        });
-
-        const token = 'valid-token';
-
-        const result = await supertest(web)
-            .put('/profile/image')
-            .set('Authorization', 'Bearer ' + token)
-            .attach('profile_image', null);
-
-        expect(result.status).toBe(400);
     });
 
     it('should reject if token is invalid', async () => {

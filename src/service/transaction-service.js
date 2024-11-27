@@ -48,11 +48,26 @@ const post = async (email, request) => {
         invoice_number: invoiceNumber,
         transaction_type: "PAYMENT",
         total_amount: existingServices.service_tariff,
+        description: existingServices.service_name,
         created_on: dateNow,
     });
-
 }
 
+const get = async (limit, offset) => {
+    const records = await transactionRepository.getTransactionHistory(limit, offset);
+
+    offset = offset || 0;
+
+    const limitValue = limit || records.length;
+
+    return {
+        offset,
+        limit: limitValue,
+        records
+    };
+};
+
 export default {
-    post
+    post,
+    get
 }

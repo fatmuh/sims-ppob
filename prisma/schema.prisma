@@ -64,6 +64,7 @@ model Transaction {
   invoice_number   String    @unique @db.VarChar(50)
   transaction_type String    @db.VarChar(100)
   total_amount     Int       @db.Int
+  description      String    @db.Text
   created_on       DateTime? @db.DateTime()
 
   @@map("transactions")

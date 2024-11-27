@@ -1,11 +1,11 @@
 import {prismaClient} from "../application/database.js";
 
 const createTransaction = async (data) => {
-    const { user_id, service_id, invoice_number, transaction_type, total_amount, created_on } = data;
+    const { user_id, service_id, invoice_number, transaction_type, total_amount, description, created_on } = data;
 
     await prismaClient.$executeRaw`
-        INSERT INTO transactions (user_id, service_id, invoice_number, transaction_type, total_amount, created_on)
-        VALUES (${user_id}, ${service_id}, ${invoice_number}, ${transaction_type}, ${total_amount}, ${created_on})`;
+        INSERT INTO transactions (user_id, service_id, invoice_number, transaction_type, total_amount, description, created_on)
+        VALUES (${user_id}, ${service_id}, ${invoice_number}, ${transaction_type}, ${total_amount}, ${description}, ${created_on})`;
 
     const createdTransaction = await prismaClient.$queryRaw`
         SELECT 
@@ -38,7 +38,24 @@ const countTransactionsByDate = async (formattedDateDb) => {
     return Number(result[0].count);
 };
 
+const getTransactionHistory = async (limit, offset) => {
+    const query = `
+        SELECT 
+            invoice_number, 
+            transaction_type, 
+            description, 
+            total_amount, 
+            created_on
+        FROM transactions
+        ORDER BY created_on DESC
+        ${limit ? `LIMIT ${limit}` : ''}
+        ${offset ? `OFFSET ${offset}` : ''};
+    `;
+    return prismaClient.$queryRawUnsafe(query);
+};
+
 export default {
     createTransaction,
-    countTransactionsByDate
+    countTransactionsByDate,
+    getTransactionHistory
 };
