@@ -50,9 +50,24 @@ const updateUser = async (email, updateData) => {
     return updatedUser.length > 0 ? updatedUser[0] : null;
 };
 
+const updateProfileImage = async (email, profileImagePath) => {
+    await prismaClient.$executeRaw`
+        UPDATE users 
+        SET profile_image = ${profileImagePath} 
+        WHERE email = ${email}`;
+
+    const updatedUser = await prismaClient.$queryRaw`
+        SELECT email, first_name, last_name, profile_image
+        FROM users 
+        WHERE email = ${email} LIMIT 1`;
+
+    return updatedUser.length > 0 ? updatedUser[0] : null;
+};
+
 export default {
     countUser,
     createUser,
     findUserByEmail,
-    updateUser
+    updateUser,
+    updateProfileImage
 };

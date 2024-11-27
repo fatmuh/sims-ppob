@@ -5,6 +5,7 @@ const errorMiddleware = (err, req, res, next) => {
         res.status(err.statusHeader).json({
             status: err.status,
             message: err.message,
+            data: null,
             ...(err.details ? JSON.parse(err.details) : {})
         });
     } else {
