@@ -9,7 +9,7 @@ describe('GET /banner', function () {
         jest.clearAllMocks();
     });
 
-    it('should can register new user', async () => {
+    it('should can get banners', async () => {
         bannerRepository.getBanners.mockResolvedValue({
                 "banner_name": "Banner 1",
                 "banner_image": "https://nutech-integrasi.app/dummy.jpg",
