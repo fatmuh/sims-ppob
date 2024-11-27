@@ -6,6 +6,7 @@ const transactionRouter = new express.Router();
 transactionRouter.use(authMiddleware)
 
 transactionRouter.get('/balance', transactionController.getBalance);
+transactionRouter.post('/topup', transactionController.updateBalance);
 
 export {
     transactionRouter

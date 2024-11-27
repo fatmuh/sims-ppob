@@ -44,9 +44,9 @@ CREATE TABLE `services` (
 -- CreateTable
 CREATE TABLE `transactions` (
     `id` INTEGER NOT NULL AUTO_INCREMENT,
+    `user_id` INTEGER NOT NULL,
+    `service_id` INTEGER NULL,
     `invoice_number` VARCHAR(50) NOT NULL,
-    `service_code` VARCHAR(50) NOT NULL,
-    `service_name` VARCHAR(100) NOT NULL,
     `transaction_type` VARCHAR(100) NOT NULL,
     `total_amount` INTEGER NOT NULL,
     `created_on` DATETIME NULL,
@@ -57,3 +57,9 @@ CREATE TABLE `transactions` (
 
 -- AddForeignKey
 ALTER TABLE `balances` ADD CONSTRAINT `balances_user_id_fkey` FOREIGN KEY (`user_id`) REFERENCES `users`(`id`) ON DELETE RESTRICT ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE `transactions` ADD CONSTRAINT `transactions_user_id_fkey` FOREIGN KEY (`user_id`) REFERENCES `users`(`id`) ON DELETE RESTRICT ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE `transactions` ADD CONSTRAINT `transactions_service_id_fkey` FOREIGN KEY (`service_id`) REFERENCES `services`(`id`) ON DELETE SET NULL ON UPDATE CASCADE;

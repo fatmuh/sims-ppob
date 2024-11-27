@@ -14,13 +14,14 @@ datasource db {
 }
 
 model User {
-  id            Int       @id @default(autoincrement())
-  email         String    @unique @db.VarChar(50)
-  password      String    @db.VarChar(100)
-  first_name    String    @db.VarChar(100)
-  last_name     String    @db.VarChar(100)
-  profile_image String?   @db.Text
+  id            Int           @id @default(autoincrement())
+  email         String        @unique @db.VarChar(50)
+  password      String        @db.VarChar(100)
+  first_name    String        @db.VarChar(100)
+  last_name     String        @db.VarChar(100)
+  profile_image String?       @db.Text
   balances      Balance[]
+  Transaction   Transaction[]
 
   @@map("users")
 }
@@ -44,20 +45,23 @@ model Banner {
 }
 
 model Service {
-  id             Int    @id @default(autoincrement())
-  service_code   String @db.VarChar(50)
-  service_name   String @db.VarChar(100)
-  service_icon   String @db.VarChar(100)
-  service_tariff Int    @db.Int
+  id             Int           @id @default(autoincrement())
+  service_code   String        @db.VarChar(50)
+  service_name   String        @db.VarChar(100)
+  service_icon   String        @db.VarChar(100)
+  service_tariff Int           @db.Int
+  Transaction    Transaction[]
 
   @@map("services")
 }
 
 model Transaction {
   id               Int       @id @default(autoincrement())
+  user_id          Int       @db.Int
+  user             User      @relation(fields: [user_id], references: [id])
+  service_id       Int?      @db.Int
+  service          Service?  @relation(fields: [service_id], references: [id])
   invoice_number   String    @unique @db.VarChar(50)
-  service_code     String    @db.VarChar(50)
-  service_name     String    @db.VarChar(100)
   transaction_type String    @db.VarChar(100)
   total_amount     Int       @db.Int
   created_on       DateTime? @db.DateTime()

@@ -4,8 +4,16 @@ export const validate = (schema, data) => {
     const { error, value } = schema.validate(data, { abortEarly: false });
     if (error) {
         const emailError = error.details.find(detail => detail.path[0] === 'email');
-        if (emailError) {
-            throw new ResponseError(102, 400, emailError.message);
+        const amountError = error.details.find(detail => detail.path[0] === 'amount');
+        if (emailError || amountError) {
+            const errorMessage = [
+                emailError ? emailError.message : null,
+                amountError ? amountError.message : null
+            ]
+                .filter(Boolean)
+                .join(' & ');
+
+            throw new ResponseError(102, 400, errorMessage);
         }
 
         const errors = error.details.map(detail => ({

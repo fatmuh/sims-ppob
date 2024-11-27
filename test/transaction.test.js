@@ -92,3 +92,63 @@ describe('GET /balance', function () {
         expect(result.body.message).toBe("Token tidak tidak valid atau kadaluwarsa");
     });
 });
+
+describe('GET /topup', function () {
+    afterEach(() => {
+        jest.clearAllMocks();
+    });
+
+    it('should can get balance', async () => {
+        userRepository.countUser.mockResolvedValue(0);
+        userRepository.createUser.mockResolvedValue({
+            id: 1,
+            email: "test@example.com",
+            first_name: "Test",
+            last_name: "Akun",
+        });
+
+        userRepository.findUserByEmail.mockResolvedValue({
+            id: 1,
+            email: "test@example.com",
+            password: await bcrypt.hash("12345678", 10),
+            first_name: "Test",
+            last_name: "Akun",
+            profile_image: "https://yoururlapi.com/profile.jpeg"
+        });
+
+        balanceRepository.findBalanceByUserId.mockResolvedValue({
+            "balance": 40000,
+        });
+
+        jwt.verify.mockImplementation((token, secret, callback) => {
+            callback(null, { email: "test@example.com" });
+        });
+
+        const token = 'valid-token';
+
+        const result = await supertest(web)
+            .get('/balance')
+            .set('Authorization', 'Bearer ' + token)
+            .send({
+                amount: 100000,
+            });
+
+        expect(result.status).toBe(200);
+        expect(result.body.status).toBe(0);
+        expect(result.body.message).toBe("Sukses");
+    });
+
+    it('should reject if token is invalid', async () => {
+        jwt.verify.mockImplementation((token, secret, callback) => {
+            callback(new Error('Invalid token'), null);
+        });
+
+        const result = await supertest(web)
+            .get('/topup')
+            .set('Authorization', 'Bearer invalid-token');
+
+        expect(result.status).toBe(401);
+        expect(result.body.status).toBe(108);
+        expect(result.body.message).toBe("Token tidak tidak valid atau kadaluwarsa");
+    });
+});
