@@ -4,9 +4,11 @@ import servicesRepository from "../src/repository/services-repository.js";
 import jwt from "jsonwebtoken";
 import userRepository from "../src/repository/user-repository.js";
 import * as bcrypt from "bcrypt";
+import bannerRepository from "../src/repository/banner-repository.js";
 
 jest.mock('../src/repository/user-repository.js');
 jest.mock('../src/repository/services-repository.js');
+jest.mock('../src/repository/banner-repository.js');
 jest.mock('jsonwebtoken');
 jest.mock('../src/middleware/auth-middleware.js', () => {
     const jwt = require('jsonwebtoken');
@@ -34,6 +36,52 @@ jest.mock('../src/middleware/auth-middleware.js', () => {
             });
         }),
     };
+});
+
+describe('GET /banner', function () {
+    afterEach(() => {
+        jest.clearAllMocks();
+    });
+
+    it('should can get banners', async () => {
+        bannerRepository.getBanners.mockResolvedValue({
+                "banner_name": "Banner 1",
+                "banner_image": "https://nutech-integrasi.app/dummy.jpg",
+                "description": "Lerem Ipsum Dolor sit amet"
+            },
+            {
+                "banner_name": "Banner 2",
+                "banner_image": "https://nutech-integrasi.app/dummy.jpg",
+                "description": "Lerem Ipsum Dolor sit amet"
+            },
+            {
+                "banner_name": "Banner 3",
+                "banner_image": "https://nutech-integrasi.app/dummy.jpg",
+                "description": "Lerem Ipsum Dolor sit amet"
+            },
+            {
+                "banner_name": "Banner 4",
+                "banner_image": "https://nutech-integrasi.app/dummy.jpg",
+                "description": "Lerem Ipsum Dolor sit amet"
+            },
+            {
+                "banner_name": "Banner 5",
+                "banner_image": "https://nutech-integrasi.app/dummy.jpg",
+                "description": "Lerem Ipsum Dolor sit amet"
+            },
+            {
+                "banner_name": "Banner 6",
+                "banner_image": "https://nutech-integrasi.app/dummy.jpg",
+                "description": "Lerem Ipsum Dolor sit amet"
+            });
+
+        const result = await supertest(web)
+            .get('/banner');
+
+        expect(result.status).toBe(200);
+        expect(result.body.status).toBe(0);
+        expect(result.body.message).toBe("Sukses");
+    });
 });
 
 describe('GET /services', function () {
