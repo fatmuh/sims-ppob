@@ -21,7 +21,7 @@ const fileFilter = (req, file, cb) => {
     if (extname && mimetype) {
         return cb(null, true);
     } else {
-        return cb(new ResponseError(102, 400, file.mimetype), false);
+        return cb(new ResponseError(102, 400, "Format Image tidak sesuai"), false);
     }
 };
 

@@ -4,6 +4,9 @@ import userRepository from "../repository/user-repository.js";
 import {ResponseError} from "../error/response-error.js";
 import * as fs from "node:fs";
 import path from "path";
+import * as dotenv from "dotenv";
+
+dotenv.config();
 
 const get = async (email) => {
     email = validate(getProfileValidation, email);
@@ -18,7 +21,7 @@ const get = async (email) => {
         email: profile.email,
         first_name: profile.first_name,
         last_name: profile.last_name,
-        profile_image: profile.profile_image ?? "",
+        profile_image: profile.profile_image ? process.env.ROOT_URL + profile.profile_image : "",
     };
 
     return response;

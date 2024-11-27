@@ -1,4 +1,7 @@
 import {prismaClient} from "../application/database.js";
+import * as dotenv from "dotenv";
+
+dotenv.config();
 
 const countUser = async (email) => {
     const result = await prismaClient.$queryRaw`
@@ -35,11 +38,11 @@ const findUserByEmail = async (email) => {
 };
 
 const updateUser = async (email, updateData) => {
-    const { first_name, last_name, profile_image } = updateData;
+    const { first_name, last_name } = updateData;
 
     await prismaClient.$executeRaw`
         UPDATE users 
-        SET first_name = ${first_name}, last_name = ${last_name}, profile_image = ${profile_image} 
+        SET first_name = ${first_name}, last_name = ${last_name}
         WHERE email = ${email}`;
 
     const updatedUser = await prismaClient.$queryRaw`
@@ -47,7 +50,12 @@ const updateUser = async (email, updateData) => {
         FROM users 
         WHERE email = ${email} LIMIT 1`;
 
-    return updatedUser.length > 0 ? updatedUser[0] : null;
+    return {
+        email: updatedUser[0].email,
+        first_name: updatedUser[0].first_name,
+        last_name: updatedUser[0].last_name,
+        profile_image: process.env.ROOT_URL + updatedUser[0].profile_image
+    };
 };
 
 const updateProfileImage = async (email, profileImagePath) => {
@@ -61,7 +69,12 @@ const updateProfileImage = async (email, profileImagePath) => {
         FROM users 
         WHERE email = ${email} LIMIT 1`;
 
-    return updatedUser.length > 0 ? updatedUser[0] : null;
+    return {
+        email: updatedUser[0].email,
+        first_name: updatedUser[0].first_name,
+        last_name: updatedUser[0].last_name,
+        profile_image: process.env.ROOT_URL + profileImagePath
+    };
 };
 
 export default {
